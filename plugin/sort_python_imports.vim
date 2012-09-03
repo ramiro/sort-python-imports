@@ -29,7 +29,10 @@ endif
 python << EOF
 import vim
 import re
-from sets import Set
+try:
+  set
+except NameError:
+  from sets import Set as set
 
 __global_import_re = re.compile('(?P<indent>\s*)import\s(?P<items>[^#]*)(?P<comment>(#.*)?)')
 __from_import_re = re.compile('(?P<indent>\s*)from\s+(?P<module>\S*)\s+import\s(?P<items>[^#]*)(?P<comment>(#.*)?)')
@@ -84,7 +87,7 @@ def _split_import(regex, line):
     module = imports.groupdict().get('module')
     if items.startswith('(') and items.endswith(')'):
         items = items[1:-1]
-    return module, Set(map(lambda item: item.strip(), items.split(','))), make_template(indent, comment)
+    return module, set(map(lambda item: item.strip(), items.split(','))), make_template(indent, comment)
 
 
 def split_globals(line):
